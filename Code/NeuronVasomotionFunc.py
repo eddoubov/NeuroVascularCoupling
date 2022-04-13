@@ -232,34 +232,6 @@ def det_pvalue(X_mat, L_mat, target_corr, tau_list, num_iter):
         
     return [corr_pvalues, null_corr_values]
 
-def filterFreq(series, filter_window, samp_freq, exclude):
-    N = len(series)
-
-    # sample spacing
-    T = samp_freq
-    dt = (1/T)*samp_freq
-
-    x = np.linspace(0.0, N*T, N)
-    yf = rfft(series)
-    
-    if N % 2 == 0:
-        xf = np.linspace(0.0, dt, N//2)
-        xf_filter_temp = ((xf > filter_window[0]) & (xf <= filter_window[1]))
-        xf_filter = np.concatenate((xf_filter_temp, np.flip(xf_filter_temp)))
-    else:
-        xf = np.linspace(0.0, dt, N//2+1)
-        xf_filter_temp = ((xf > filter_window[0]) & (xf <= filter_window[1]))
-        xf_filter = np.concatenate((xf_filter_temp, np.flip(xf_filter_temp[:-1])))
-    
-    if exclude:
-        yf[xf_filter] = 0
-    else:
-        yf[~xf_filter] = 0
-
-    yf_inv = irfft(yf)
-    
-    return yf_inv
-
 def create_Surr_data(X, L):
     
     if len(X.shape) <= 1:
